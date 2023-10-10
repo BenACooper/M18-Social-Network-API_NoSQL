@@ -49,7 +49,7 @@ module.exports = {
   // PUT updates to a single user
   async updateUser(req, res) {
     console.log("You are updating a user!");
-    console.log(req, body);
+    console.log(req.body);
 
     try {
       const user = await User.findOneAndUpdate(
