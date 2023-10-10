@@ -21,9 +21,9 @@ module.exports = {
   // Get a single thought
   async getSingleThought(req, res) {
     try {
-      const thought = await Thought.findOne({ _id: req.params.thoughtId }).select(
-        "-__v"
-      );
+      const thought = await Thought.findOne({
+        _id: req.params.thoughtId,
+      }).select("-__v");
 
       if (!thought) {
         return res.status(404).json({ message: "No thought with that ID" });
@@ -37,31 +37,33 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
-// POST a new Thought
-async createThought(req, res) {
-  try {
-    // Create the new thought
-    const thought = await Thought.create(req.body);
+  // POST a new Thought
+  async createThought(req, res) {
+    try {
+      // Create the new thought
+      const thought = await Thought.create(req.body);
 
-    // Find the user by ID
-    const user = await User.findOne({ username: req.body.username });
+      // Find the user by ID
+      const user = await User.findOne({ username: req.body.username });
 
-    if (!user) {
-      return res.status(404).json({ message: "That username does not exist." });
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "That username does not exist." });
+      }
+
+      // Associate the new thought with the user
+      user.thoughts.push(thought);
+
+      // Save both the thought and the user
+      await thought.save();
+      await user.save();
+
+      res.json(thought);
+    } catch (err) {
+      res.status(500).json(err);
     }
-
-    // Associate the new thought with the user
-    user.thoughts.push(thought);
-
-    // Save both the thought and the user
-    await thought.save();
-    await user.save();
-
-    res.json(thought);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-},
+  },
   // PUT updates to a Thought
   async updateThought(req, res) {
     console.log("You are updating a thought!");
@@ -83,14 +85,14 @@ async createThought(req, res) {
       res.json(thought);
     } catch (err) {
       res.status(500).json(err);
-      console.error(err)
+      console.error(err);
       // console.log(err)
     }
   },
   // DELETE a thought
   async deleteThought(req, res) {
     try {
-      const thought = await Thought.findOneAndRemove({ _id: req.params.Id });
+      const thought = await Thought.findOneAndRemove({ _id: req.params.thoughtId });
 
       if (!thought) {
         return res.status(404).json({ message: "No such thought exists" });
