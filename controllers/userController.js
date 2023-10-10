@@ -107,12 +107,12 @@ module.exports = {
       }
 
       //Check of they are already friends.
-      if (user.friends.includes(friendId)) {
+      if (user.friends.includes(friend._id)) {
         return res.status(400).json({ message: "Users are already friends" });
       }
 
       //Add new friend to users friend list.
-      user.friends.push(friendId);
+      user.friends.push(friend._id);
       await user.save();
 
       res.json(user);
