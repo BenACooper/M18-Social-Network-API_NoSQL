@@ -37,15 +37,31 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
-  // POST a new Thought
-  async createThought(req, res) {
-    try {
-      const thought = await User.create(req.body);
-      res.json(thought);
-    } catch (err) {
-      res.status(500).json(err);
+// POST a new Thought
+async createThought(req, res) {
+  try {
+    // Create the new thought
+    const thought = await Thought.create(req.body);
+
+    // Find the user by ID
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      return res.status(404).json({ message: "That username does not exist." });
     }
-  },
+
+    // Associate the new thought with the user
+    user.thoughts.push(thought);
+
+    // Save both the thought and the user
+    await thought.save();
+    await user.save();
+
+    res.json(thought);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+},
   // PUT updates to a Thought
   async updateThought(req, res) {
     console.log("You are updating a thought!");
