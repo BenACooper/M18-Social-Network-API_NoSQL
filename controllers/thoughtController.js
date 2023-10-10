@@ -114,4 +114,50 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  // POST a reaction
+  async addReaction(req, res) {
+    try {
+      const thought = await Thought.findById(req.params.thoughtId);
+
+      if (!thought) {
+        return res.status(404).json({ message: "No thought!" });
+      }
+
+      const newReaction = {
+        reactionBody: req.body.reactionBody,
+        username: req.body.username,
+      };
+
+      thought.reactions.push(newReaction);
+      await thought.save();
+
+      res.status(201).json({ message: "Reaction created", thought });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json(error);
+    }
+  },
+  // DELETE a reaction
+  async deleteReaction(req, res) {
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        {
+          $pull: {
+            reactions: { _id: req.params.reactionId },
+          },
+        },
+        { new: true }
+      );
+
+      if (!thought) {
+        return res.status(404).json({ message: "No thought!" });
+      }
+
+      res.json({ message: "Reaction deleted", thought });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json(error);
+    }
+  },
 };
