@@ -21,9 +21,19 @@ module.exports = {
   // GET a single user
   async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId }).select(
-        "-__v"
-      );
+      const user = await User.findOne({ _id: req.params.userId })
+        .select("-__v")
+        //Populate friends and thoughts for single user.
+        .populate([
+          {
+            path: "thoughts",
+            select: "thoughtText",
+          },
+          {
+            path: "friends",
+            select: "username",
+          },
+        ]);
 
       if (!user) {
         return res.status(404).json({ message: "No user with that ID" });
@@ -33,7 +43,7 @@ module.exports = {
         user,
       });
     } catch (err) {
-      console.log(err);
+      console.log("An error occured:", err);
       return res.status(500).json(err);
     }
   },
