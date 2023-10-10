@@ -38,8 +38,24 @@ const userSchema = new Schema(
 );
 
 // Create a virtual called friendCount that retrieves the length of the user's friends array field on query.
+
 userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
+});
+
+// userSchema.virtual('friendCount').get(async function () {
+//   try {
+//     const friendCount = await User.countDocuments({ _id: { $in: this.friends } });
+//     return friendCount;
+//   } catch (err) {
+//     console.error(err);
+//     return 0; // Return 0 if there is an error
+//   }
+// });
+
+//Not sure how this resolve the issue since console.log on lines 38 and 49 of userController.js show that the friends field is an array. The population method is asynchronous, maybe it does not become an array until after the process is complete?
+userSchema.virtual('friendCount').get(function () {
+  return Array.isArray(this.friends) ? this.friends.length : 0;
 });
 
 const User = model("User", userSchema);

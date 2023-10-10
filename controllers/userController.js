@@ -35,13 +35,21 @@ module.exports = {
           },
         ]);
 
+    console.log("User data: ", user)// Added this line for debugging.
+
       if (!user) {
         return res.status(404).json({ message: "No user with that ID" });
       }
 
-      res.json({
-        user,
-      });
+      if (!user.friends) {
+        console.error("Error: 'friends' field is not populated");
+        return res.status(500).json({ message: "Failed to populate 'friends' field" });
+      }
+
+      console.log("Populated 'friends' field:", user.friends); // Added this line for debugging
+
+
+      res.json({user});
     } catch (err) {
       console.log("An error occured:", err);
       return res.status(500).json(err);
