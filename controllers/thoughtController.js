@@ -44,10 +44,10 @@ async createThought(req, res) {
     const thought = await Thought.create(req.body);
 
     // Find the user by ID
-    const user = await User.findById(req.body.userId);
+    const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
-      return res.status(404).json({ message: "No user with that ID" });
+      return res.status(404).json({ message: "That username does not exist." });
     }
 
     // Associate the new thought with the user
