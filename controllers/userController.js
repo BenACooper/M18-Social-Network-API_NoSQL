@@ -72,13 +72,21 @@ module.exports = {
   // DELETE an existing user
   async deleteUser(req, res) {
     try {
-      const user = await User.findOneAndRemove({ _id: req.params.userId });
+      // Find the user by ID
+      const user = await User.findById(req.params.userId);
 
+      //If user does not exist descrioptive error message.
       if (!user) {
         return res.status(404).json({ message: "No such user exists" });
       }
 
-      res.json({ message: "User successfully deleted" });
+      // Find and delete all thoughts associated with the user before deleting the user
+      await Thought.deleteMany({ username: user.username });
+
+      // Delete the user
+      await User.findByIdAndRemove(req.params.userId);
+
+      res.json({ message: "User successfully deleted. No thinking allowed." });
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
@@ -117,7 +125,7 @@ module.exports = {
     try {
       //Get both user and friend.
       const user = await User.findById({ _id: req.params.userId });
-      const friend = await User.findById({ _id: req.params.friendId });;
+      const friend = await User.findById({ _id: req.params.friendId });
 
       //Check if both user and friend exist.
       if (!user || !friend) {
