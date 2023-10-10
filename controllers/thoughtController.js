@@ -65,7 +65,7 @@ async createThought(req, res) {
   // PUT updates to a Thought
   async updateThought(req, res) {
     console.log("You are updating a thought!");
-    console.log(req, body);
+    console.log(req.body);
 
     try {
       const user = await Thought.findOneAndUpdate(
@@ -74,7 +74,7 @@ async createThought(req, res) {
         { new: true }
       );
 
-      if (!thought) {
+      if (!user) {
         return res
           .status(404)
           .json({ message: "No user found with that ID :(" });
@@ -83,6 +83,8 @@ async createThought(req, res) {
       res.json(user);
     } catch (err) {
       res.status(500).json(err);
+      console.error(err)
+      // console.log(err)
     }
   },
   // DELETE a thought
