@@ -23,7 +23,7 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: req.params.userId })
         .select("-__v")
-        //Populate friends and thoughts for single user.
+        // Populate friends and thoughts for single user.
         .populate([
           {
             path: "thoughts",
@@ -31,11 +31,10 @@ module.exports = {
           },
           {
             path: "friends",
-            select: "username",
+            // select: "username", //! Why does this break it?
           },
         ]);
-
-    console.log("User data: ", user)// Added this line for debugging.
+    // console.log("User data: ", user)// Added this line for debugging.
 
       if (!user) {
         return res.status(404).json({ message: "No user with that ID" });
@@ -46,10 +45,10 @@ module.exports = {
         return res.status(500).json({ message: "Failed to populate 'friends' field" });
       }
 
-      console.log("Populated 'friends' field:", user.friends); // Added this line for debugging
+      console.log("Populated 'friends' field:", user); // Added this line for debugging
 
 
-      res.json({user});
+      res.json(user); //! Works if destructuring or not.
     } catch (err) {
       console.log("An error occured:", err);
       return res.status(500).json(err);

@@ -3,10 +3,6 @@ const { Schema, model } = require("mongoose");
 
 const reactionSchema = new Schema(
   {
-    reactionId: {
-      type: Schema.Types.ObjectId, // Use Mongoose's ObjectId data type
-      default: () => new Types.ObjectId(), //Default value is set to a new ObjectId
-    },
     reactionBody: {
       type: String,
       required: true,
@@ -55,9 +51,9 @@ const thoughtSchema = new Schema(
   }
 );
 
-// thoughtSchema.virtual('reactionCount').get(function () {
-//   return this.reactions.length;
-// });
+thoughtSchema.virtual('reactionCount').get(function () {
+  return Array.isArray(this.reactions) ? this.reactions.length : 0;
+});
 
 
 const Thought = model("Thought", thoughtSchema);

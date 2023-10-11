@@ -39,9 +39,12 @@ const userSchema = new Schema(
 
 // Create a virtual called friendCount that retrieves the length of the user's friends array field on query.
 
-userSchema.virtual('friendCount').get(function () {
-  return this.friends.length;
-});
+// userSchema.virtual('friendCount').get(function () {
+//   // console.log("=======", this.friends)
+//   // console.log("=======", this.username) //! Why is it undefined??
+//   console.log("THIS >>>", this) //! "this" refers to the first object inside the friends array???
+//   return this.friends.length;
+// });
 
 // userSchema.virtual('friendCount').get(async function () {
 //   try {
@@ -55,7 +58,8 @@ userSchema.virtual('friendCount').get(function () {
 
 //Not sure how this resolve the issue since console.log on lines 38 and 49 of userController.js show that the friends field is an array. The population method is asynchronous, maybe it does not become an array until after the process is complete?
 userSchema.virtual('friendCount').get(function () {
-  return Array.isArray(this.friends) ? this.friends.length : 0;
+  console.log(this)
+  return Array.isArray(this.friends) ? this.friends.length : 0; 
 });
 
 const User = model("User", userSchema);

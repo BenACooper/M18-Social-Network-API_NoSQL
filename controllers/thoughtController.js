@@ -15,15 +15,21 @@ module.exports = {
       res.json(thoughtObj);
     } catch (err) {
       console.log(err);
+      console.error(err);
       return res.status(500).json(err);
     }
   },
   // Get a single thought
   async getSingleThought(req, res) {
     try {
-      const thought = await Thought.findOne({
+      const thought = await Thought.findOne({ //! Does await include the entire chain?
         _id: req.params.thoughtId,
-      }).select("-__v");
+      })
+        .select("-__v")
+        .populate({ //! Object instead of array.
+          path: "reactions",
+          select: "reactionBody username",
+        });
 
       if (!thought) {
         return res.status(404).json({ message: "No thought with that ID" });
@@ -140,11 +146,14 @@ module.exports = {
   // DELETE a reaction
   async deleteReaction(req, res) {
     try {
+      const { thoughtId } = req.params;
+      const { reactionId } = req.body;
+
       const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId },
+        { _id: thoughtId },
         {
           $pull: {
-            reactions: { _id: req.params.reactionId },
+            reactions: { _id: reactionId },
           },
         },
         { new: true }
