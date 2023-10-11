@@ -26,7 +26,7 @@ module.exports = {
         _id: req.params.thoughtId,
       })
         .select("-__v")
-        .populate({ //! Object instead of array.
+        .populate({
           path: "reactions",
           select: "reactionBody username",
         });
