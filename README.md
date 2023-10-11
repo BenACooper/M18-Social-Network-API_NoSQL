@@ -20,7 +20,7 @@
   ## Usage
   To use the app simply run "npm start" in the command line. Use a tool like Insomnia to test HTTP requests.  
 
-  [Video Demo](https://drive.google.com/file/d/14fPYCqN0qf9lt1aSN-CwMZD8TrDcvovF/view)
+  [Video Demo](https://drive.google.com/file/d/1qLBEh4TTzMlvRcIY6X3WlSvMrcuPvsNm/view)
 
   ### Create a User
 
